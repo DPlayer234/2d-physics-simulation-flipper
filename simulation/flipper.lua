@@ -53,6 +53,16 @@ function Flipper:onCollisionBegin(collision)
 	end
 end
 
+-- Updates the flipper once a frame
+function Flipper:update()
+	local rigidbody = self:getComponent("Rigidbody")
+	if self.transform:getPosition().x < self._pivot.x then
+		rigidbody:applyForce(Vector2(-50, 0))
+	else
+		rigidbody:applyForce(Vector2(50, 0))
+	end
+end
+
 -- This is called by the flipper's trigger to move it
 function Flipper:triggerMe()
 	-- Setting the velocity is more consistent than adding an impulse
