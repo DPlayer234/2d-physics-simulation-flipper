@@ -21,6 +21,7 @@ function love.load()
 		})
 
 		love.window.setIcon(love.image.newImageData("assets/textures/icon.png"))
+		love.window.setTitle(_game.fullTitle)
 	end
 
 	-- Load and initialize the engine
