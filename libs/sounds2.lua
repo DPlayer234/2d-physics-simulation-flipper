@@ -2,7 +2,7 @@
 Rewritten Sound Wrapper for easier handling of Sound Effects (SFX) and their position
 as well as the handling of Music and loading those.
 ]]
-local class = require "libs.class"
+local class = heartbeat.class
 
 local audio, thread = love.audio, love.thread
 local pairs, rawget, type = pairs, rawget, type

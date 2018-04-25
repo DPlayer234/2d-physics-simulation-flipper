@@ -1,17 +1,17 @@
 local seed = 123
 local rng = love.math.newRandomGenerator(seed)
 
-local colors = require "libs.colors"
-local color = {
-	sensor  = colors.new(  0,   0, 255,  96),
-	outline = colors.new(255, 255, 255, 255),
-	joint   = colors.new(  0, 255,   0, 255),
-	contact = colors.new(255,   0,   0, 255),
+local Color = heartbeat.Color
+local colors = {
+	sensor  = Color.fromUInt8(  0,   0, 255,  96),
+	outline = Color.fromUInt8(255, 255, 255, 255),
+	joint   = Color.fromUInt8(  0, 255,   0, 255),
+	contact = Color.fromUInt8(255,   0,   0, 255),
 }
 
-local cmin = 0.1 * colors.max
-local cmax = colors.max
-local calpha = 0.35 * colors.max
+local cmin = 0.1
+local cmax = 1
+local calpha = 0.35
 
 local randomValue = function()
 	return rng:random() * (cmax - cmin) + cmin
@@ -22,7 +22,7 @@ local function drawFixture(fixture)
 	local shapeType = shape:getType()
 
 	if (fixture:isSensor()) then
-		love.graphics.setColor(color.sensor)
+		love.graphics.setColor(colors.sensor)
 	else
 		love.graphics.setColor(randomValue(), randomValue(), randomValue(), calpha)
 	end
@@ -31,20 +31,20 @@ local function drawFixture(fixture)
 		local x,y = shape:getPoint()
 		local radius = shape:getRadius()
 		love.graphics.circle("fill",x,y,radius)
-		love.graphics.setColor(color.outline)
+		love.graphics.setColor(colors.outline)
 		love.graphics.circle("line",x,y,radius)
 		local eyeRadius = radius/4
 		love.graphics.circle("fill",0,-radius+eyeRadius,eyeRadius)
 	elseif (shapeType == "polygon") then
 		local points = {shape:getPoints()}
 		love.graphics.polygon("fill",points)
-		love.graphics.setColor(color.outline)
+		love.graphics.setColor(colors.outline)
 		love.graphics.polygon("line",points)
 	elseif (shapeType == "edge") then
-		love.graphics.setColor(color.outline)
+		love.graphics.setColor(colors.outline)
 		love.graphics.line(shape:getPoints())
 	elseif (shapeType == "chain") then
-		love.graphics.setColor(color.outline)
+		love.graphics.setColor(colors.outline)
 		love.graphics.line(shape:getPoints())
 	end
 end
@@ -81,9 +81,9 @@ local function debugWorldDraw(world,topLeft_x,topLeft_y,width,height)
 		drawBody(body)
 	end
 
-	love.graphics.setColor(color.joint)
-	love.graphics.setLineWidth(3)
-	love.graphics.setPointSize(3)
+	love.graphics.setColor(colors.joint)
+	love.graphics.setLineWidth(0.3)
+	love.graphics.setPointSize(0.3)
 	local joints = world:getJoints()
 	for i=1,#joints do
 		local x1,y1,x2,y2 = joints[i]:getAnchors()
@@ -99,8 +99,8 @@ local function debugWorldDraw(world,topLeft_x,topLeft_y,width,height)
 		end
 	end
 
-	love.graphics.setColor(color.contact)
-	love.graphics.setPointSize(3)
+	love.graphics.setColor(colors.contact)
+	love.graphics.setPointSize(0.3)
 	local contacts = world:getContacts()
 	for i=1,#contacts do
 		local x1,y1,x2,y2 = contacts[i]:getPositions()

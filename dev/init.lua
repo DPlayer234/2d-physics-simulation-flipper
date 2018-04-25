@@ -1,6 +1,5 @@
 --[[
 Loading the debug module and... stuff.
-Scrapped in release builds.
 ]]
 --#exclude start
 miscMod.assert(..., "dev.init")

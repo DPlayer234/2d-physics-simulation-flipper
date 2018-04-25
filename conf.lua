@@ -4,10 +4,10 @@ Löve Startup Configuration File
 function love.conf(t)
 	-- General data
 	_game = {
-		title     = "Heartbeat",
-		subtitle  = "Löve Engine",
-		copyright = "Copyright © 2018 Darius \"DPlay\" K.",
-		developer = "Darius \"DPlay\" K.",
+		title     = "GPR4400.S1",
+		subtitle  = "Physiksimulation",
+		copyright = "Copyright © 2018 Darius K.",
+		developer = "Darius K.",
 		publisher = "None",
 		version   = "0.0.0",
 		identity  = "heartbeat-engine"
@@ -16,7 +16,7 @@ function love.conf(t)
 	_game.fullTitle = _game.subtitle and _game.title .. ": " .. _game.subtitle or _game.title
 
 	-- Main settings
-	t.version = "11.0"
+	t.version = "11.1"
 	t.accelerometerjoystick = false
 
 	t.identity = _game.identity

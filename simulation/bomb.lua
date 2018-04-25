@@ -1,33 +1,50 @@
 --[[
-This is the endless bomb, that launches the ball
+This is an endless bomb, that launches anything tagged as a BombTrigger
 ]]
+local Color = heartbeat.Color
 local Vector2 = heartbeat.Vector2
+
+local Explosion = require(miscMod.getModule(..., false) .. ".explosion")
 
 local Bomb = heartbeat.class("Bomb", heartbeat.ECS.Entity)
 
--- Initializes a Bomb
-function Bomb:initialize()
+local BOMB_RADIUS = 1.25
+
+-- Creates a new Bomb
+function Bomb:new()
+	self:Entity()
+
 	self._ticking = false
 
+	-- Set the timer
 	self._maxTime = 1
 	self._time = -self._maxTime
+end
 
-	self._range = 20
-	self._power = 40
-
+-- Initializes a Bomb
+function Bomb:initialize()
+	-- Rigidbody and collider
 	local rigidbody = self:addComponent(heartbeat.components.Rigidbody("dynamic"))
 	rigidbody:setMaterial(heartbeat.Material() {
-		bounciness = 0,
-		friction = 0.8
+		bounciness = 0.05,
+		friction = 0.6
 	})
 
-	self:addComponent(heartbeat.components.Collider("Circle", 1.25))
+	self:addComponent(heartbeat.components.Collider("Circle", BOMB_RADIUS))
+
+	-- Adds a renderer
+	local circleRenderer = self:addComponent(heartbeat.components.ShapeRenderer("fill", "circle", BOMB_RADIUS))
+	circleRenderer:setColor(Color.black)
+
+	self._explosion = self.ecs:addEntity(Explosion(self))
+
+	-- Bombs can trigger each other
+	self:tagAs("BombTrigger")
 end
 
 -- Calle when something collides with the bomb
 function Bomb:onCollisionStay(collision)
-	if not collision.otherCollider.entity:isTagged("Machine")
-	and not self._ticking and self._time < -self._maxTime then
+	if collision.otherCollider.entity:isTagged("BombTrigger") and not self._ticking and self._time < -self._maxTime then
 		self._time = self._maxTime
 		self._ticking = true
 	end
@@ -37,9 +54,16 @@ end
 function Bomb:update()
 	self._time = self._time - self.ecs.deltaTime
 
+	local renderer = self:getComponent("ShapeRenderer")
+
+	-- Explode if it is ticking and the time has dropped low
 	if self._ticking and self._time < 0 then
 		self:explode()
 		self._ticking = false
+
+		renderer:setColor(Color.black)
+	elseif self._ticking then
+		renderer:setColor(renderer:getColor() == Color.black and Color.white or Color.black)
 	end
 end
 
@@ -52,40 +76,7 @@ end
 
 -- Call to cause an explosion
 function Bomb:explode()
-	-- Get own fixture
-	local myFixture = self:getComponent("Collider"):getLFixture()
-
-	-- Get all entities
-	local entities = self.ecs:findEntitiesByType("Entity")
-
-	-- Iterate over all entitites
-	for _, v in ipairs(entities) do
-		local rigidbody = v:getComponent("Rigidbody")
-
-		if rigidbody ~= nil then
-			-- Needs to have Rigidbody
-			local colliders = v:getComponents("Collider")
-
-			for i=1, #colliders do
-				-- Iterate over colliders, get distances and closest points
-				local fixture = colliders[i]:getLFixture()
-				local distance, x1, y1, x2, y2 = love.physics.getDistance(myFixture, fixture)
-
-				if distance < self._range then
-					-- Impulse if in range
-					local normal = ((x1 == x2 and y1 == y2) and
-						(v.transform:getPosition() - self.transform:getPosition()) or
-						Vector2(x2 - x1, y2 - y1))
-
-					if normal ~= Vector2.zero then
-						rigidbody:applyImpulse(
-							self._power * (self._range - distance) * normal:getNormalized(),
-							Vector2(x2, y2))
-					end
-				end
-			end
-		end
-	end
+	self._explosion:explode(self:getComponent("Collider"):getLFixture())
 end
 
 return Bomb

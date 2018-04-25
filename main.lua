@@ -1,13 +1,10 @@
 -- Load general files
 require "r_redirect"
 
+local physicsWorldDraw
+
+-- Loads the game content
 function love.load()
-	-- Load libraries
-	miscMod = require "libs.misc_mod"
-	sounds  = require "libs.sounds2"
-
-	ffi = require "ffi"
-
 	do
 		-- Creating the window
 		local width, height = love.window.getDesktopDimensions()
@@ -29,27 +26,38 @@ function love.load()
 	-- Load and initialize the engine
 	heartbeat = require "heartbeat"
 
+	-- Load libraries
+	ffi = require "ffi"
+
+	miscMod = require "libs.misc_mod"
+	sounds  = require "libs.sounds2"
+
+	physicsWorldDraw = require "dev.physics_world_draw"
+
+	-- Initialize and stuff
 	heartbeat:initialize { meter = 2 }
 
-	require "dev"
+	require "dev" --#exclude line
 
 	local state = require "simulation"
 
 	heartbeat:pushGameState(state)
 end
 
+-- Updates the game
 function love.update(dt)
 	heartbeat:update(dt)
 	sounds.update(dt)
 end
 
-local physicsWorldDraw = require "dev.physics_world_draw"
-
+-- Draws the game
 function love.draw()
 	heartbeat:draw()
 
-	local gameState = heartbeat:getActiveGameState()
-	if gameState then
-		physicsWorldDraw(gameState.world, 0, 0, love.graphics.getDimensions())
+	if _arg.debug then
+		local gameState = heartbeat:getActiveGameState()
+		if gameState then
+			physicsWorldDraw(gameState.world, 0, 0, love.graphics.getDimensions())
+		end
 	end
 end
