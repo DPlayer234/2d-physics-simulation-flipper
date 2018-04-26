@@ -8,6 +8,7 @@ local Explosion = heartbeat.class("Explosion", heartbeat.ECS.Entity)
 local MAX_ACTIVE_TIME = 0.1
 
 -- Creates a new explosion. Immediately deactivates itself.
+-- bomb: The bomb that triggers this explosion.
 function Explosion:new(bomb)
 	self:Entity()
 
@@ -37,6 +38,7 @@ function Explosion:update()
 end
 
 -- Causes an explosion and temporarily actives this entity
+-- refFixture: The fixture to get the distance from to the other entities.
 function Explosion:explode(refFixture)
 	self.transform:setPosition(self._bomb.transform:getPosition())
 
@@ -53,6 +55,8 @@ function Explosion:explode(refFixture)
 end
 
 -- Explodes a single entity
+-- refFixture: The fixture to get the distance from to the other entities.
+-- entity: The entity to apply the impulse to.
 function Explosion:_explodeEntity(refFixture, entity)
 	-- Do not explode yourself or the bomb entity
 	if entity == self or entity == self._bomb then return end

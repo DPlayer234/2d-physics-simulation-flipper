@@ -4,6 +4,7 @@ This is a circular bumper
 local Bumper = heartbeat.class("Bumper", heartbeat.ECS.Entity)
 
 -- Creates a new Bumper
+-- radius: The radius of the bumber
 function Bumper:new(radius)
 	self:Entity()
 

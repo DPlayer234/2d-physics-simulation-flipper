@@ -6,12 +6,12 @@ local Vector2 = heartbeat.Vector2
 local FlipperTrigger = heartbeat.class("FlipperTrigger", heartbeat.ECS.Entity)
 
 -- Creates a new FlipperTrigger
--- parent is the parent flipper
--- size are the dimensions of the trigger volume
-function FlipperTrigger:new(parent, size)
+-- flipper: The flipper this should trigger
+-- size: (Vector2) The dimensions of the trigger volume
+function FlipperTrigger:new(flipper, size)
 	self:Entity()
 
-	self._parent = parent
+	self._flipper = flipper
 	self._size = size
 end
 
@@ -29,7 +29,7 @@ end
 -- Triggered when something enters the sensor
 function FlipperTrigger:onSensorBegin(collision)
 	if collision.otherCollider.entity:isTagged("Ball") then
-		self._parent:triggerMe()
+		self._flipper:triggerMe()
 	end
 end
 

@@ -18,8 +18,8 @@ function Machine:initialize()
 	})
 
 	-- Add two colliders based off of images
-	local outside = self:addComponent(ImageCollider(love.image.newImageData("assets/collider/flipper_main.png"), Vector2.zero, Vector2.one))
-	local inside  = self:addComponent(ImageCollider(love.image.newImageData("assets/collider/flipper_sub.png"), Vector2.zero, Vector2.one))
+	local outside = self:addComponent(ImageCollider(love.image.newImageData("assets/collider/machine_main.png"), Vector2.zero, Vector2.one))
+	local inside  = self:addComponent(ImageCollider(love.image.newImageData("assets/collider/machine_sub.png"), Vector2.zero, Vector2.one))
 
 	-- Add the Renderers
 	local mainColor = heartbeat.Color(0.3, 0.5, 0.8)

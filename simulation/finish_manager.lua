@@ -5,6 +5,7 @@ local FinishManager = heartbeat.class("FinishManager", heartbeat.ECS.Entity)
 
 -- Initializes the FinishManager
 function FinishManager:initialize()
+	-- Create, set up and register the Input object
 	local input = heartbeat.input.KeyboardInput({})
 
 	input:bindKey("escape", "quit")

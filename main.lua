@@ -1,6 +1,4 @@
 -- Load general files
-require "r_redirect"
-
 local physicsWorldDraw
 
 -- Loads the game content
@@ -28,11 +26,7 @@ function love.load()
 	heartbeat = require "heartbeat"
 
 	-- Load libraries
-	ffi = require "ffi"
-
 	miscMod = require "libs.misc_mod"
-	sounds  = require "libs.sounds2"
-
 	physicsWorldDraw = require "dev.physics_world_draw"
 
 	-- Initialize and stuff
@@ -40,15 +34,14 @@ function love.load()
 
 	require "dev" --#exclude line
 
-	local state = require "simulation"
+	local Simulation = require "simulation"
 
-	heartbeat:pushGameState(state)
+	heartbeat:pushGameState(Simulation())
 end
 
 -- Updates the game
 function love.update(dt)
 	heartbeat:update(dt)
-	sounds.update(dt)
 end
 
 -- Draws the game

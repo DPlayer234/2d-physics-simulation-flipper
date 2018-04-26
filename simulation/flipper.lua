@@ -11,7 +11,7 @@ local Flipper = heartbeat.class("Flipper", heartbeat.ECS.Entity)
 local FLIPPER_SIZE = Vector2(12, 1)
 
 -- Creates a new flipper
--- Pivot is the rotation point in world space
+-- pivot: (Vector2) The rotation point in world space
 function Flipper:new(pivot)
 	self:Entity()
 
@@ -84,6 +84,7 @@ function Flipper:_addJoint()
 	myJoint:connect(otherJoint, true)
 end
 
+-- Adds the renderers
 function Flipper:_addRenderers()
 	-- Attach Renderers
 	local renderer = self:addComponent(heartbeat.components.ShapeRenderer("fill", "rectangle", FLIPPER_SIZE))

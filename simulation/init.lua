@@ -1,9 +1,8 @@
 --[[
-This script initializes and sets up the simulation
+This script initializes and sets up the simulation by defining a new GameState class.
 ]]
 local currentModule = miscMod.getModule(..., true)
 
-local gameState = heartbeat.GameState()
 local Vector2 = heartbeat.Vector2
 local Vector3 = heartbeat.Vector3
 
@@ -15,8 +14,10 @@ local FinishManager = require(currentModule .. ".finish_manager")
 local Flipper       = require(currentModule .. ".flipper")
 local Machine       = require(currentModule .. ".machine")
 
--- This is called once added
-gameState.initialize = function(self)
+local Simulation = heartbeat.class("Simulation", heartbeat.GameState)
+
+-- This is called once the GameState is pushed
+function Simulation:initialize()
 	-- Add the machine
 	self.ecs:addEntity(Machine())
 
@@ -59,13 +60,15 @@ gameState.initialize = function(self)
 	self.ecs:addEntity(FinishManager())
 end
 
-gameState.draw = function(self)
+-- This is called once drawn.
+function Simulation:draw()
+	-- Add some screen transformations
 	self.transformation:reset()
 		:translate(Vector2(love.graphics.getWidth() * 0.5, 0))
 		:scale(love.graphics.getHeight() / 64)
 		:translate(Vector2(-20, 0))
 
-	self.GameState.draw(gameState)
+	self.GameState.draw(self)
 end
 
-return gameState
+return Simulation
